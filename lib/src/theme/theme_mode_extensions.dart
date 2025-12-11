@@ -57,4 +57,20 @@ extension ThemeModeExtension on ThemeMode {
         return ThemeMode.system;
     }
   }
+
+  /// Returns the effective brightness for this theme mode.
+  ///
+  /// - If theme mode is light, returns [Brightness.light]
+  /// - If theme mode is dark, returns [Brightness.dark]
+  /// - If theme mode is system, returns the provided [platformBrightness]
+  Brightness getEffectiveBrightness(Brightness platformBrightness) {
+    switch (this) {
+      case ThemeMode.light:
+        return Brightness.light;
+      case ThemeMode.dark:
+        return Brightness.dark;
+      case ThemeMode.system:
+        return platformBrightness;
+    }
+  }
 }

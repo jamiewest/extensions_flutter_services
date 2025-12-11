@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:extensions_flutter/extensions_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 
 /// Network information data class.
@@ -128,7 +129,7 @@ base class NetworkInfoBackgroundService extends BackgroundService {
     this._networkInfoNotifier,
     this._options,
     LoggerFactory loggerFactory,
-  ) : _logger = loggerFactory.createLogger('NetworkInfoBackgroundService');
+  ) : _logger = loggerFactory.createLogger('NetworkInfoService');
 
   final ValueNotifier<NetworkInfoData?> _networkInfoNotifier;
   final NetworkInfoOptions _options;
@@ -139,6 +140,9 @@ base class NetworkInfoBackgroundService extends BackgroundService {
 
   @override
   Future<void> execute(CancellationToken stoppingToken) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    _logger.logDebug('NetworkInfoService is starting.');
     // Load network info initially
     await _loadNetworkInfo();
 
@@ -183,7 +187,7 @@ base class NetworkInfoBackgroundService extends BackgroundService {
 
       if (_options.enableLogging) {
         _logger.log<NetworkInfoData>(
-          logLevel: LogLevel.information,
+          logLevel: LogLevel.debug,
           eventId: const EventId(1, 'NetworkInfoLoaded'),
           state: info,
           formatter: (state, _) =>
@@ -217,6 +221,7 @@ base class NetworkInfoBackgroundService extends BackgroundService {
 
   @override
   Future<void> dispose() async {
+    _logger.logTrace('Disposing NetworkInfo service.');
     _cancellationRegistration?.dispose();
     _refreshTimer?.cancel();
     super.dispose();

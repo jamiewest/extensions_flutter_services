@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:extensions_flutter/extensions_flutter.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Options for configuring the SharedPreferences service.
@@ -69,9 +70,7 @@ base class SharedPreferencesBackgroundService extends BackgroundService {
     this._sharedPreferences,
     this._options,
     LoggerFactory loggerFactory,
-  ) : _logger = loggerFactory.createLogger(
-        'SharedPreferencesBackgroundService',
-      );
+  ) : _logger = loggerFactory.createLogger('SharedPreferencesService');
 
   final SharedPreferencesAsync _sharedPreferences;
   final SharedPreferencesOptions _options;
@@ -79,6 +78,10 @@ base class SharedPreferencesBackgroundService extends BackgroundService {
 
   @override
   Future<void> execute(CancellationToken stoppingToken) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    _logger.logDebug('SharedPreferencesService is starting.');
+
     try {
       // Verify SharedPreferences is accessible
       final keys = await _sharedPreferences.getKeys();

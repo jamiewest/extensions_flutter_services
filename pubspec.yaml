@@ -10,7 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  extensions_flutter: ^0.3.12
+  # extensions_flutter: ^0.3.12
+  extensions_flutter:
+    path: ../extensions/packages/extensions_flutter
   battery_plus: ^7.0.0
   connectivity_plus: ^7.0.0
   device_info_plus: ^12.3.0

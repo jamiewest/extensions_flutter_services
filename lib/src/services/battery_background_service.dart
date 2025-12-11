@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:battery_plus/battery_plus.dart';
 import 'package:extensions_flutter/extensions_flutter.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 /// Battery information data class.
 class BatteryInfoData {
@@ -123,7 +123,7 @@ base class BatteryBackgroundService extends BackgroundService {
     this._batteryInfoNotifier,
     this._options,
     LoggerFactory loggerFactory,
-  ) : _logger = loggerFactory.createLogger('BatteryBackgroundService');
+  ) : _logger = loggerFactory.createLogger('BatteryService');
 
   final ValueNotifier<BatteryInfoData?> _batteryInfoNotifier;
   final BatteryOptions _options;
@@ -137,6 +137,10 @@ base class BatteryBackgroundService extends BackgroundService {
 
   @override
   Future<void> execute(CancellationToken stoppingToken) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    _logger.logDebug('BatteryService is starting.');
+
     try {
       // Load battery info initially
       await _loadBatteryInfo();
@@ -212,7 +216,7 @@ base class BatteryBackgroundService extends BackgroundService {
           _lastLevel != null &&
           _lastLevel != level) {
         _logger.log<BatteryInfoData>(
-          logLevel: LogLevel.debug,
+          logLevel: LogLevel.trace,
           eventId: const EventId(5, 'BatteryLevelChanged'),
           state: info,
           formatter: (state, _) =>
@@ -224,11 +228,10 @@ base class BatteryBackgroundService extends BackgroundService {
 
       if (_options.enableLogging && _lastState == null) {
         _logger.log<BatteryInfoData>(
-          logLevel: LogLevel.information,
+          logLevel: LogLevel.debug,
           eventId: const EventId(1, 'BatteryInfoLoaded'),
           state: info,
-          formatter: (state, _) =>
-              'Battery info loaded: ${state.level}% (${state.state.name})',
+          formatter: (state, _) => 'Battery level is ${state.level}%.',
         );
       }
     } on Exception catch (error) {
@@ -264,7 +267,7 @@ base class BatteryBackgroundService extends BackgroundService {
 
       if (_options.logStateChanges && _lastState != state) {
         _logger.log<BatteryInfoData>(
-          logLevel: LogLevel.information,
+          logLevel: LogLevel.trace,
           eventId: const EventId(2, 'BatteryStateChanged'),
           state: info,
           formatter: (state, _) => _lastState == null

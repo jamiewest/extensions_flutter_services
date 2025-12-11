@@ -2,6 +2,7 @@ import 'package:extensions_flutter/extensions_flutter.dart';
 
 import 'package:xterm/xterm.dart';
 
+import 'debug_terminal_wrapper.dart';
 import 'xterm_logger_provider.dart';
 
 /// Extension methods for the [LoggerFactory] class.
@@ -16,6 +17,10 @@ extension XtermLoggerFactoryExtensions on LoggingBuilder {
           sp.getRequiredService<TerminalWrapper>().terminal,
         ),
       ),
+    );
+    services.addSingleton<RegisteredWidgetFactory>(
+      (_) =>
+          (sp, child) => DebugTerminalWrapper(services: sp, child: child),
     );
     return this;
   }

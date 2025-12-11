@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:extensions_flutter/extensions_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 /// Options for configuring the PackageInfo service.
@@ -75,7 +76,7 @@ base class PackageInfoBackgroundService extends BackgroundService {
     this._packageInfo,
     this._options,
     LoggerFactory loggerFactory,
-  ) : _logger = loggerFactory.createLogger('PackageInfoBackgroundService');
+  ) : _logger = loggerFactory.createLogger('PackageInfoService');
 
   final ValueNotifier<PackageInfo?> _packageInfo;
   final PackageInfoOptions _options;
@@ -83,13 +84,17 @@ base class PackageInfoBackgroundService extends BackgroundService {
 
   @override
   Future<void> execute(CancellationToken stoppingToken) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    _logger.logDebug('PackageInfoService is starting.');
+
     try {
       final info = await PackageInfo.fromPlatform();
       _packageInfo.value = info;
 
       if (_options.enableLogging) {
         _logger.log<PackageInfo>(
-          logLevel: LogLevel.information,
+          logLevel: LogLevel.debug,
           eventId: const EventId(1, 'PackageInfoLoaded'),
           state: info,
           formatter: (state, _) =>

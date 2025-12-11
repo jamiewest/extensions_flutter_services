@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:extensions_flutter/extensions_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 /// Device information data class that holds platform-specific info.
 class DeviceInfoData {
@@ -133,7 +134,7 @@ base class DeviceInfoBackgroundService extends BackgroundService {
     this._deviceInfoNotifier,
     this._options,
     LoggerFactory loggerFactory,
-  ) : _logger = loggerFactory.createLogger('DeviceInfoBackgroundService');
+  ) : _logger = loggerFactory.createLogger('DeviceInfoService');
 
   final ValueNotifier<DeviceInfoData?> _deviceInfoNotifier;
   final DeviceInfoOptions _options;
@@ -142,6 +143,10 @@ base class DeviceInfoBackgroundService extends BackgroundService {
 
   @override
   Future<void> execute(CancellationToken stoppingToken) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    _logger.logDebug('DeviceInfoService is starting.');
+
     try {
       DeviceInfoData info;
 
@@ -201,7 +206,7 @@ base class DeviceInfoBackgroundService extends BackgroundService {
 
       if (_options.enableLogging) {
         _logger.log<DeviceInfoData>(
-          logLevel: LogLevel.information,
+          logLevel: LogLevel.debug,
           eventId: const EventId(1, 'DeviceInfoLoaded'),
           state: info,
           formatter: (state, _) =>

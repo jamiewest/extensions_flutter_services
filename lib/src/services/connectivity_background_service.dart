@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:extensions_flutter/extensions_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 extension ConnectivityServiceExtension on FlutterBuilder {
   ServiceCollection addConnectivityService() {
@@ -30,16 +31,21 @@ base class ConnectivityBackgroundService extends BackgroundService {
     this._connectivity,
     this._connectivityStatus,
     LoggerFactory loggerFactory,
-  ) : _logger = loggerFactory.createLogger('ConnectivityBackgroundService');
+  ) : _logger = loggerFactory.createLogger('ConnectivityService');
 
   final Connectivity _connectivity;
   final ValueNotifier<List<ConnectivityResult>> _connectivityStatus;
   final Logger _logger;
   StreamSubscription<List<ConnectivityResult>>? _subscription;
   CancellationTokenRegistration? _cancellationRegistration;
+  bool firstRun = true;
 
   @override
   Future<void> execute(CancellationToken stoppingToken) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    _logger.logDebug('ConnectivityService is starting.');
+
     await _updateInitialStatus();
 
     _subscription = _connectivity.onConnectivityChanged.listen(
@@ -82,13 +88,25 @@ base class ConnectivityBackgroundService extends BackgroundService {
         ? <ConnectivityResult>[ConnectivityResult.none]
         : results;
     _connectivityStatus.value = normalized;
-    _logger.log<List<ConnectivityResult>>(
-      logLevel: LogLevel.debug,
-      eventId: const EventId(1, 'ConnectivityChanged'),
-      state: normalized,
-      formatter: (state, _) =>
-          'Connectivity changed: ${state.map((s) => s.name).join(', ')}',
-    );
+
+    if (firstRun == true) {
+      firstRun = false;
+      _logger.log<List<ConnectivityResult>>(
+        logLevel: LogLevel.debug,
+        eventId: const EventId(1, 'ConnectivityChanged'),
+        state: normalized,
+        formatter: (state, _) =>
+            'Initial connectivity: ${state.map((s) => s.name).join(', ')}',
+      );
+    } else {
+      _logger.log<List<ConnectivityResult>>(
+        logLevel: LogLevel.trace,
+        eventId: const EventId(1, 'ConnectivityChanged'),
+        state: normalized,
+        formatter: (state, _) =>
+            'Connectivity changed: ${state.map((s) => s.name).join(', ')}',
+      );
+    }
   }
 
   @override

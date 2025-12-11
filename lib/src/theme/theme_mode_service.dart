@@ -19,7 +19,7 @@ import 'theme_mode_extensions.dart';
 /// // Save theme mode
 /// await themeService.saveThemeMode(ThemeMode.dark);
 /// ```
-class ThemeService {
+class ThemeModeService {
   static const String _themeModeKey = 'theme_mode';
 
   SharedPreferences? _prefs;
