@@ -213,10 +213,14 @@ class _DebugTerminalOverlayState extends State<DebugTerminalOverlay>
               child: Directionality(
                 textDirection: TextDirection.ltr,
                 child: FloatingActionButton(
-                  mini: true,
+                  mini: false,
                   onPressed: _toggleTerminal,
                   backgroundColor: Colors.black87,
-                  child: const Icon(Icons.terminal, color: Colors.greenAccent),
+                  child: const Icon(
+                    Icons.terminal,
+                    size: 20,
+                    color: Color(0xff81A1C1),
+                  ),
                 ),
               ),
             ),
@@ -324,13 +328,24 @@ class _DebugTerminalOverlayState extends State<DebugTerminalOverlay>
         context: context,
         removeTop: true,
         removeBottom: true,
-        child: TerminalView(
-          widget.terminal,
-          textStyle: const TerminalStyle(fontSize: 12),
-          autoResize: true,
-          padding: EdgeInsets.fromLTRB(0, 8, 0, 0),
-          backgroundOpacity: 0.0,
-          readOnly: true,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SizedBox(
+                width: 2000, // Wide enough to prevent wrapping on long lines
+                height: constraints.maxHeight,
+                child: TerminalView(
+                  widget.terminal,
+                  textStyle: const TerminalStyle(fontSize: 12),
+                  autoResize: true,
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                  backgroundOpacity: 0.0,
+                  readOnly: true,
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

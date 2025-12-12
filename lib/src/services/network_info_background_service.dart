@@ -63,7 +63,7 @@ class NetworkInfoOptions {
 }
 
 extension NetworkInfoServiceExtension on FlutterBuilder {
-  ServiceCollection addNetworkInfo([
+  ServiceCollection addNetworkInformation([
     void Function(NetworkInfoOptions)? configure,
   ]) {
     final options = NetworkInfoOptions();

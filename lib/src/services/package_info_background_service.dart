@@ -20,7 +20,7 @@ class PackageInfoOptions {
 }
 
 extension PackageInfoServiceExtension on FlutterBuilder {
-  ServiceCollection addPackageInfo([
+  ServiceCollection addPackageInformation([
     void Function(PackageInfoOptions)? configure,
   ]) {
     final options = PackageInfoOptions();

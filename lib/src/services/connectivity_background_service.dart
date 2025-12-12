@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 extension ConnectivityServiceExtension on FlutterBuilder {
-  ServiceCollection addConnectivityService() {
+  ServiceCollection addConnectivityMonitor() {
     return services
         .addSingleton<Connectivity>((services) => Connectivity())
         .addSingleton<ValueNotifier<List<ConnectivityResult>>>(

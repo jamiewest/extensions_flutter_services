@@ -50,7 +50,9 @@ class BatteryOptions {
 }
 
 extension BatteryServiceExtension on FlutterBuilder {
-  ServiceCollection addBattery([void Function(BatteryOptions)? configure]) {
+  ServiceCollection addBatteryMonitor([
+    void Function(BatteryOptions)? configure,
+  ]) {
     final options = BatteryOptions();
     if (configure != null) {
       // Since BatteryOptions is immutable, we need a builder pattern

@@ -194,7 +194,7 @@ extension PlatformBrightnessBuildContextExtension on BuildContext {
 }
 
 extension PlatformBrightnessFlutterBuilderExtension on FlutterBuilder {
-  ServiceCollection addPlatformBrightnessService() {
+  ServiceCollection addBrightnessMonitor() {
     return services
       ..addSingleton<ValueNotifier<Brightness>>(
         (_) => ValueNotifier<Brightness>(Brightness.light),

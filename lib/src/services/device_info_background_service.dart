@@ -81,7 +81,7 @@ class DeviceInfoOptions {
 }
 
 extension DeviceInfoServiceExtension on FlutterBuilder {
-  ServiceCollection addDeviceInfo([
+  ServiceCollection addDeviceInformation([
     void Function(DeviceInfoOptions)? configure,
   ]) {
     final options = DeviceInfoOptions();
